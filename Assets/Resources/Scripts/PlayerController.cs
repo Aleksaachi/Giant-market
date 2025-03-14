@@ -22,6 +22,7 @@ public class PlayerController : NetworkBehaviour
     {
         playerInformationHolder = GameObject.Find("PlayerInformationHolder" + OwnerClientId).GetComponent<PlayerInformationHolder>();
         name = "Player" + OwnerClientId;
+        Camera.main.GetComponent<StickOnPlayer>().StickOnObject(transform);
     }
 
     // Update is called once per frame

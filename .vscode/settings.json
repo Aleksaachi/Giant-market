@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Giant market.sln"
+    "dotnet.defaultSolution": "Giant-market.sln"
 }

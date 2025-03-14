@@ -124,5 +124,5 @@ MonoBehaviour:
   sideColliderDistance: 0.3
   topColliderDistance: 0.4
   horizontalSpeed: 8
-  jumpStrenght: 50
-  maxGravity: -15
+  jumpStrenght: 75
+  maxGravity: -20
