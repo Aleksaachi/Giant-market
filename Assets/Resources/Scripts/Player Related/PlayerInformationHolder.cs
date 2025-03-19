@@ -31,7 +31,7 @@ public class PlayerInformationHolder : NetworkBehaviour
         if (!IsOwner) return;
 
         if (!gameStarted && SceneManager.GetActiveScene() == SceneManager.GetSceneByName(targetSceneName)){
-            SpawnNetworkObjectWithOwnerServerRpc(playerPrefab.name, Vector3.zero, OwnerClientId);
+            SpawnNetworkObjectWithOwnerServerRpc(playerPrefab.name, new Vector3(-11, 7, 0), OwnerClientId);
 
             gameStarted = true;
 
