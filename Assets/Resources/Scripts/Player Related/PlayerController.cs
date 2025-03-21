@@ -14,12 +14,15 @@ public class PlayerController : NetworkBehaviour
     public float horizontalSpeed;
     public float climbingSpeed;
     public float jumpStrenght;
+    public float jumpHoldStrenght;
     public float jumpMaxHoldTime;
+    public float coyoteTime;
     public float maxGravity;
-    public float gravityStrenght;
+    public float gravityStrength;
     float verticalVelocity;
     float currentGravity;
     bool grounded;
+    float coyoteTimer;
     bool ignorePlatforms;
     PlayerInformationHolder playerInformationHolder;
     Transform currentLadder;
@@ -77,51 +80,66 @@ public class PlayerController : NetworkBehaviour
             // The player is trying to move
             animator.StopPlayback();
 
+            // Calculate move amount
             float moveAmount = horizontalSpeed * input * Time.deltaTime;
+
+            // Drop from ladder
+            if (currentLadder != null){
+                currentLadder = null;
+                coyoteTimer = coyoteTime;
+            }
+
+            // Reset raycast variables
+            RaycastHit2D[] hits = new RaycastHit2D[0];
+            int groundIndex = 0;
             bool willHitWall = false;
 
-            currentLadder = null;
-            Debug.Log("old: " + moveAmount);
             // Check for collision
             if (input > 0){
                 // Right check
-                RaycastHit2D hit = new();
-
                 spriteRenderer.flipX = false;
                 
                 // Raycast to the right
                 for (int i = 0; i < raycastAmountPerSide; i++){
                     Vector3 relativeVectorOrigin = new Vector3(0, Mathf.Lerp(bottomColliderDistance * 0.99f, topColliderDistance* 0.99f, (float)i/(raycastAmountPerSide-1)), 0);
-                    hit = Physics2D.Raycast(transform.position + relativeVectorOrigin, Vector2.right, Mathf.Abs(moveAmount) + sideColliderDistance, LayerMask.GetMask("Ground"));
-                    if (hit.transform != null && hit.transform.CompareTag("Ground")){
-                        // Hit ground
-                        willHitWall = true;
-                        break;
+                    hits = Physics2D.RaycastAll(transform.position + relativeVectorOrigin, Vector2.right, Mathf.Abs(moveAmount) + sideColliderDistance, LayerMask.GetMask("Ground"));
+                    for (int j = 0; j < hits.Length; j++){
+                        if (hits[j].transform != null && hits[j].transform.CompareTag("Ground")){
+                            // Hit ground
+                            willHitWall = true;
+                            groundIndex = j;
+                            break;
+                        }
                     }
+                    if (willHitWall) break;
                 }
 
+                // Move against wall
                 if (willHitWall){
-                    moveAmount = hit.distance - sideColliderDistance;
+                    moveAmount = hits[groundIndex].distance - sideColliderDistance;
                 }
             }else if (input < 0){
                 // Left check
-                RaycastHit2D hit = new();
-                
                 spriteRenderer.flipX = true;
 
                 // Raycast to the left
                 for (int i = 0; i < raycastAmountPerSide; i++){
                     Vector3 relativeVectorOrigin = new Vector3(0, Mathf.Lerp(bottomColliderDistance * 0.99f, topColliderDistance* 0.99f, (float)i/(raycastAmountPerSide-1)), 0);
-                    hit = Physics2D.Raycast(transform.position + relativeVectorOrigin, Vector2.left, Mathf.Abs(moveAmount) + sideColliderDistance, LayerMask.GetMask("Ground"));
-                    if (hit.transform != null && hit.transform.CompareTag("Ground")){
-                        // Hit ground
-                        willHitWall = true;
-                        break;
+                    hits = Physics2D.RaycastAll(transform.position + relativeVectorOrigin, Vector2.left, Mathf.Abs(moveAmount) + sideColliderDistance, LayerMask.GetMask("Ground"));
+                    for (int j = 0; j < hits.Length; j++){
+                        if (hits[j].transform != null && hits[j].transform.CompareTag("Ground")){
+                            // Hit ground
+                            willHitWall = true;
+                            groundIndex = j;
+                            break;
+                        }
                     }
+                    if (willHitWall) break;
                 }
 
+                // Move against wall
                 if (willHitWall){
-                    moveAmount = -(hit.distance - sideColliderDistance);
+                    moveAmount = -(hits[groundIndex].distance - sideColliderDistance);
                 }
             }
             // Move the player object
@@ -141,20 +159,22 @@ public class PlayerController : NetworkBehaviour
 
         // The player can jump if he is grounded or on a ladder
         if (Input.GetKey(KeyCode.Space)){
-            if (!inJump && (grounded || currentLadder != null) && verticalVelocity == 0){
-                verticalVelocity += jumpStrenght/10;
+            if (!inJump && (coyoteTimer > 0 || grounded || currentLadder != null) && verticalVelocity <= 0){
+                verticalVelocity = jumpStrenght/10;
                 currentLadder = null;
                 inJump = true;
 
                 addedJumpForce = 0;
                 jumpHoldTimer = 0;
+
+                coyoteTimer = 0;
             }
 
             if (inJump){
                 float force = jumpStrenght * Time.deltaTime;
                 addedJumpForce += force;
-                if (addedJumpForce > jumpStrenght){
-                     force = addedJumpForce - jumpStrenght;
+                if (addedJumpForce > jumpHoldStrenght){
+                     force = addedJumpForce - jumpHoldStrenght;
                      inJump = false;
                 }
 
@@ -187,16 +207,21 @@ public class PlayerController : NetworkBehaviour
         // Grounded check
         grounded = false;
         RaycastHit2D hit = new();
-        
+
+        if (coyoteTimer > 0){
+            coyoteTimer -= Time.deltaTime;
+        }
+
         // Raycast into the ground
         for (int i = 0; i < raycastAmountPerSide; i++){
-            Vector3 relativeVectorOrigin = new Vector3(Mathf.Lerp(-sideColliderDistance* 0.99f, sideColliderDistance* 0.99f, (float)i/(raycastAmountPerSide-1)), 0, 0);
+            Vector3 relativeVectorOrigin = new Vector3(Mathf.Lerp(-sideColliderDistance* 0.98f, sideColliderDistance* 0.98f, (float)i/(raycastAmountPerSide-1)), 0, 0);
             //Visualize rays: Debug.DrawRay(transform.position + relativeVectorOrigin, -Vector2.down * (realVerticalVelocity + bottomColliderDistance), Color.red, Time.deltaTime);
             hit = Physics2D.Raycast(transform.position + relativeVectorOrigin, -Vector2.down, verticalVelocity*Time.deltaTime + bottomColliderDistance, LayerMask.GetMask("Ground"));
             if (hit.transform != null){
                 // Hit ground
                 if (hit.transform.CompareTag("Ground") || (hit.transform.CompareTag("Platform") && !ignorePlatforms)){
                     grounded = true;
+                    coyoteTimer = coyoteTime;
                     break;
                 }
             }
@@ -215,7 +240,7 @@ public class PlayerController : NetworkBehaviour
         if (grounded){
             currentGravity = 0;
         }else{
-            currentGravity -= gravityStrenght * Time.deltaTime;
+            currentGravity -= gravityStrength * Time.deltaTime;
             currentGravity = Mathf.Clamp(currentGravity, maxGravity, 0);
         }
 

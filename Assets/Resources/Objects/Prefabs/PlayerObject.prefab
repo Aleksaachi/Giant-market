@@ -126,10 +126,12 @@ MonoBehaviour:
   topColliderDistance: 0.4
   horizontalSpeed: 6
   climbingSpeed: 4
-  jumpStrenght: 55
+  jumpStrenght: 60
+  jumpHoldStrenght: 5
   jumpMaxHoldTime: 0.1
+  coyoteTime: 0.2
   maxGravity: -25
-  gravityStrenght: 250
+  gravityStrength: 250
 --- !u!95 &-7750580041231408714
 Animator:
   serializedVersion: 5
