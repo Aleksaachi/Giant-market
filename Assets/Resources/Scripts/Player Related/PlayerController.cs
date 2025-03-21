@@ -33,9 +33,15 @@ public class PlayerController : NetworkBehaviour
     {
         playerInformationHolder = GameObject.Find("PlayerInformationHolder" + OwnerClientId).GetComponent<PlayerInformationHolder>();
         name = "Player" + OwnerClientId;
-        Camera.main.GetComponent<StickOnPlayer>().StickOnObject(transform);
+        
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        if (IsOwner){
+            Camera.main.GetComponent<StickOnPlayer>().StickOnObject(transform);
+        }
+
+        transform.position = new Vector3(-11, 7, 0);
     }
     void FixedUpdate()
     {   
