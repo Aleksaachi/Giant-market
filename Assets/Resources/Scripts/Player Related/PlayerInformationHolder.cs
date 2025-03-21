@@ -20,8 +20,12 @@ public class PlayerInformationHolder : NetworkBehaviour
     {   
         name = "PlayerInformationHolder" + OwnerClientId;
         DontDestroyOnLoad(gameObject);
+
+        if (IsOwner){
+             gameCode = PlayModeMenu.instance.code;
+        }
+        
         if (IsHost && IsOwner){
-            gameCode = PlayModeMenu.instance.code;
             SceneManager.LoadScene(targetSceneName);
         }
     }
@@ -34,8 +38,6 @@ public class PlayerInformationHolder : NetworkBehaviour
             SpawnNetworkObjectWithOwnerServerRpc(playerPrefab.name, new Vector3(-11, 7, 0), OwnerClientId);
 
             gameStarted = true;
-
-            
         }
     }
     [ServerRpc(RequireOwnership = false)]
@@ -91,7 +93,6 @@ public class PlayerInformationHolder : NetworkBehaviour
 
     [ServerRpc(RequireOwnership = false)]
     public void SendPositionServerRpc(Vector3 position, string objectName, ulong ignoreClient){
-        Debug.Log("server " + position + " player: " + ignoreClient);
         // Update the server transform
         GameObject target = GameObject.Find(objectName);
         try{
@@ -104,7 +105,6 @@ public class PlayerInformationHolder : NetworkBehaviour
 
     [ClientRpc]
     public void SendPositionClientRpc(Vector3 position, string objectName, ulong ignoreClient){
-        Debug.Log("server " + position + " player: " + ignoreClient);
         // Update the client transform
         if (IsServer || (IsLocalPlayer && OwnerClientId == ignoreClient)) return;
 

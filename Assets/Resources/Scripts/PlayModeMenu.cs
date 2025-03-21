@@ -54,6 +54,8 @@ public class PlayModeMenu : MonoBehaviour
         _buttons.SetActive(false);
 
         JoinAllocation a = await RelayService.Instance.JoinAllocationAsync(_joinInput.text);
+        
+        code = _joinInput.text;
 
         _transport.SetClientRelayData(a.RelayServer.IpV4, (ushort)a.RelayServer.Port, a.AllocationIdBytes, a.Key, a.ConnectionData, a.HostConnectionData);
 
