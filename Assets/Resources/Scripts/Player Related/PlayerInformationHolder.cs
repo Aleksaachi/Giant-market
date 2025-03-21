@@ -68,6 +68,7 @@ public class PlayerInformationHolder : NetworkBehaviour
     public void SpawnNetworkObjectWithOwnerServerRpc(string objectToSpawn, Vector3 position, ulong ownerId)
     {
         GameObject newObject = Instantiate(Resources.Load<GameObject>("Objects/Prefabs/" + objectToSpawn), position, Quaternion.identity);
+
         // Fix name
         string newName = GenerateObjectName(objectToSpawn);
         AdvanceObjectSuffix();
@@ -90,6 +91,7 @@ public class PlayerInformationHolder : NetworkBehaviour
 
     [ServerRpc(RequireOwnership = false)]
     public void SendPositionServerRpc(Vector3 position, string objectName, ulong ignoreClient){
+        Debug.Log("server " + position + " player: " + ignoreClient);
         // Update the server transform
         GameObject target = GameObject.Find(objectName);
         try{
@@ -102,6 +104,7 @@ public class PlayerInformationHolder : NetworkBehaviour
 
     [ClientRpc]
     public void SendPositionClientRpc(Vector3 position, string objectName, ulong ignoreClient){
+        Debug.Log("server " + position + " player: " + ignoreClient);
         // Update the client transform
         if (IsServer || (IsLocalPlayer && OwnerClientId == ignoreClient)) return;
 
