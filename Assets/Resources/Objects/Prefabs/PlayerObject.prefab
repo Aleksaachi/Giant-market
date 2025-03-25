@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2356265875181319306}
   - component: {fileID: 4730502046239460393}
   - component: {fileID: -7750580041231408714}
+  - component: {fileID: 5266013375855744271}
   m_Layer: 0
   m_Name: PlayerObject
   m_TagString: Untagged
@@ -133,7 +134,8 @@ MonoBehaviour:
   coyoteTime: 0.2
   maxGravity: -25
   gravityStrength: 250
-  psPlayerFall: {fileID: 3396342055919954533, guid: 158db987c61e2ef43bd3fc06a1079f6a, type: 3}
+  psPlayerFallBig: {fileID: 3396342055919954533, guid: 158db987c61e2ef43bd3fc06a1079f6a, type: 3}
+  psPlayerFallSmall: {fileID: 3396342055919954533, guid: dd2b51661fd75a447a86414bfe759915, type: 3}
 --- !u!95 &-7750580041231408714
 Animator:
   serializedVersion: 5
@@ -155,3 +157,15 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5266013375855744271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2788565107341697617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbf4c05f7772bf14d80a3f3deb49a47e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

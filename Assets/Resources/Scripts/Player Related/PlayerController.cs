@@ -21,7 +21,8 @@ public class PlayerController : NetworkBehaviour
     public float maxGravity;
     public float gravityStrength;
     [Header("Particle objects:")]
-    public GameObject psPlayerFall;
+    public GameObject psPlayerFallBig;
+    public GameObject psPlayerFallSmall;
     float verticalVelocity;
     float currentGravity;
     bool grounded;
@@ -241,7 +242,13 @@ public class PlayerController : NetworkBehaviour
         // Ground the player
         if (grounded && currentGravity != 0){
             bool spawnFallParticles = false;
-            if (verticalVelocity < maxGravity/3){
+            int particleSize = 0;
+
+            if (verticalVelocity < maxGravity/2){
+                spawnFallParticles = true;
+                particleSize = 2;
+            }else if (verticalVelocity < maxGravity/4){
+                particleSize = 1;
                 spawnFallParticles = true;
             }
             currentGravity = -(hit.distance + bottomColliderDistance);
@@ -252,7 +259,11 @@ public class PlayerController : NetworkBehaviour
             transform.position = newVerticalPosition;
 
             if (spawnFallParticles){
-                playerInformationHolder.SpawnObjectServerRpc(psPlayerFall.name, new Vector3(transform.position.x, transform.position.y - bottomColliderDistance, transform.position.z));
+                if (particleSize == 2){
+                    playerInformationHolder.SpawnObjectServerRpc("Particles/" + psPlayerFallBig.name, new Vector3(transform.position.x, transform.position.y + bottomColliderDistance*3/4f, transform.position.z));
+                }else if (particleSize == 1){
+                    playerInformationHolder.SpawnObjectServerRpc("Particles/" + psPlayerFallSmall.name, new Vector3(transform.position.x, transform.position.y + bottomColliderDistance*3/4f, transform.position.z));
+                }
             }
         }   
 
