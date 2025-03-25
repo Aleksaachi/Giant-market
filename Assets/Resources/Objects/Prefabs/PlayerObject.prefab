@@ -125,6 +125,7 @@ MonoBehaviour:
   sideColliderDistance: 0.3
   topColliderDistance: 0.4
   horizontalSpeed: 6
+  walkTiltAngle: 0
   climbingSpeed: 4
   jumpStrenght: 60
   jumpHoldStrenght: 5
@@ -132,6 +133,7 @@ MonoBehaviour:
   coyoteTime: 0.2
   maxGravity: -25
   gravityStrength: 250
+  psPlayerFall: {fileID: 3396342055919954533, guid: 158db987c61e2ef43bd3fc06a1079f6a, type: 3}
 --- !u!95 &-7750580041231408714
 Animator:
   serializedVersion: 5

@@ -12,6 +12,7 @@ public class PlayerController : NetworkBehaviour
     public float topColliderDistance;
     [Header("Player settings:")]
     public float horizontalSpeed;
+    public float walkTiltAngle;
     public float climbingSpeed;
     public float jumpStrenght;
     public float jumpHoldStrenght;
@@ -19,6 +20,8 @@ public class PlayerController : NetworkBehaviour
     public float coyoteTime;
     public float maxGravity;
     public float gravityStrength;
+    [Header("Particle objects:")]
+    public GameObject psPlayerFall;
     float verticalVelocity;
     float currentGravity;
     bool grounded;
@@ -151,6 +154,9 @@ public class PlayerController : NetworkBehaviour
             // Move the player object
             Vector3 newPosition = transform.position + new Vector3(moveAmount, 0, 0);
             transform.position = newPosition;
+
+            Quaternion newRotation = Quaternion.Euler(0, 0, Mathf.Lerp(-walkTiltAngle, walkTiltAngle, input/2 + 0.5f));
+            transform.rotation = newRotation;
         }else{
             animator.StartPlayback();
         }
@@ -234,12 +240,20 @@ public class PlayerController : NetworkBehaviour
         }
         // Ground the player
         if (grounded && currentGravity != 0){
+            bool spawnFallParticles = false;
+            if (verticalVelocity < maxGravity/3){
+                spawnFallParticles = true;
+            }
             currentGravity = -(hit.distance + bottomColliderDistance);
             verticalVelocity = 0;
 
             // Update vertical position
             Vector3 newVerticalPosition = transform.position + new Vector3(0, currentGravity, 0);
             transform.position = newVerticalPosition;
+
+            if (spawnFallParticles){
+                playerInformationHolder.SpawnObjectServerRpc(psPlayerFall.name, new Vector3(transform.position.x, transform.position.y - bottomColliderDistance, transform.position.z));
+            }
         }   
 
         // Update gravity
