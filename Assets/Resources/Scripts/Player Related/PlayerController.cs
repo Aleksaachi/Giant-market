@@ -23,9 +23,11 @@ public class PlayerController : NetworkBehaviour
     [Header("Particle objects:")]
     public GameObject psPlayerFallBig;
     public GameObject psPlayerFallSmall;
-    float verticalVelocity;
+    [HideInInspector]
+    public float verticalVelocity;
     float currentGravity;
-    bool grounded;
+    [HideInInspector]
+    public bool grounded;
     float coyoteTimer;
     bool ignorePlatforms;
     PlayerInformationHolder playerInformationHolder;
@@ -33,16 +35,17 @@ public class PlayerController : NetworkBehaviour
     float ladderHeight;
     float jumpHoldTimer;
     float addedJumpForce;
-    bool inJump;
-    Animator animator;
-    SpriteRenderer spriteRenderer;
+    [HideInInspector]
+    public bool inJump;
+
+    [HideInInspector]
+    public bool isMoving;
+    [HideInInspector]
+    public int facing = 1;
     void Start()
     {
         playerInformationHolder = GameObject.Find("PlayerInformationHolder" + OwnerClientId).GetComponent<PlayerInformationHolder>();
         name = "Player" + OwnerClientId;
-        
-        animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (IsOwner){
             Camera.main.GetComponent<StickOnPlayer>().StickOnObject(transform);
@@ -86,9 +89,11 @@ public class PlayerController : NetworkBehaviour
     }
     void InputHorizontal(){
         float input = Input.GetAxis("Horizontal");
+
+        isMoving = false;
+
         if (input != 0){
             // The player is trying to move
-            animator.StopPlayback();
 
             // Calculate move amount
             float moveAmount = horizontalSpeed * input * Time.deltaTime;
@@ -107,7 +112,7 @@ public class PlayerController : NetworkBehaviour
             // Check for collision
             if (input > 0){
                 // Right check
-                spriteRenderer.flipX = false;
+                facing = 1;
                 
                 // Raycast to the right
                 for (int i = 0; i < raycastAmountPerSide; i++){
@@ -130,7 +135,7 @@ public class PlayerController : NetworkBehaviour
                 }
             }else if (input < 0){
                 // Left check
-                spriteRenderer.flipX = true;
+                facing = -1;
 
                 // Raycast to the left
                 for (int i = 0; i < raycastAmountPerSide; i++){
@@ -152,14 +157,14 @@ public class PlayerController : NetworkBehaviour
                     moveAmount = -(hits[groundIndex].distance - sideColliderDistance);
                 }
             }
+
+            if (moveAmount != 0) isMoving = true;
             // Move the player object
             Vector3 newPosition = transform.position + new Vector3(moveAmount, 0, 0);
             transform.position = newPosition;
 
             Quaternion newRotation = Quaternion.Euler(0, 0, Mathf.Lerp(-walkTiltAngle, walkTiltAngle, input/2 + 0.5f));
             transform.rotation = newRotation;
-        }else{
-            animator.StartPlayback();
         }
     }
     void InputVertical(){
