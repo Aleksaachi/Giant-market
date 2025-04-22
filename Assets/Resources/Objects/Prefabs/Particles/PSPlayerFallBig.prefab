@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 862116075950315962}
   - component: {fileID: 6982852725851327220}
   - component: {fileID: 1019889708084779518}
+  - component: {fileID: 4129524043506861208}
   m_Layer: 0
   m_Name: PSPlayerFallBig
   m_TagString: Untagged
@@ -4830,3 +4831,16 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &4129524043506861208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3396342055919954533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 954f5b5193fcfe64c8367a3e626ae331, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  destroyAfterSeconds: 5

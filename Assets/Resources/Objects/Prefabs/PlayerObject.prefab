@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6219969542870489104}
   - component: {fileID: 2356265875181319306}
   - component: {fileID: 4730502046239460393}
+  - component: {fileID: 6533499302727092974}
   - component: {fileID: 5266013375855744271}
   - component: {fileID: 7103653975160158758}
   m_Layer: 0
@@ -89,6 +90,23 @@ MonoBehaviour:
   inJump: 0
   isMoving: 0
   facing: 1
+--- !u!114 &6533499302727092974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2788565107341697617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa22b3c26f5cfd04bb3fedb0c9813c66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grabDistance: 2
+  offsetFromPlayer: {x: 0, y: 0}
+  materialTarget: {fileID: 2100000, guid: 3d5d85e087e4b4843a3d10a5de47db9a, type: 2}
+  materialTargetable: {fileID: 2100000, guid: 758db7de381a8f3429a30795ecde3e5f, type: 2}
+  baseMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!114 &5266013375855744271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,7 +207,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 613116538, guid: 9f5c859cf6c210e4591d512f2ad3d845, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
